@@ -18,3 +18,14 @@ jobs:
             sleep 2
           done
           exit 1
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+      - name: Tag and push image
+        run: |
+          docker tag aca-nginx:ci ${{ secrets.DOCKERHUB_USERNAME }}/aca-nginx-lab:latest
+          docker tag aca-nginx:ci ${{ secrets.DOCKERHUB_USERNAME }}/aca-nginx-lab:${{ github.sha }}
+          docker push ${{ secrets.DOCKERHUB_USERNAME }}/aca-nginx-lab:latest
+          docker push ${{ secrets.DOCKERHUB_USERNAME }}/aca-nginx-lab:${{ github.sha }}
